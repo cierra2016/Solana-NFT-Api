@@ -16,7 +16,8 @@
     "@solana/spl-token": "^0.2.0",
     "axios": "^0.26.0",
     "dotenv": "^16.0.0",
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

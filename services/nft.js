@@ -50,19 +50,23 @@ class NFTService {
     mint,
     owner,
   ) => {
-    const mintKey = new anchor.web3.PublicKey(mint)
-    const ownerKey = new anchor.web3.PublicKey(owner)
-    let [pda] = await anchor.web3.PublicKey.findProgramAddress([
-      Buffer.from('metadata'),
-      TOKEN_METADATA_PROGRAM_ID.toBuffer(),
-      mintKey.toBuffer(),
-    ], TOKEN_METADATA_PROGRAM_ID)
-  
-    const accountInfo = await connection.getParsedAccountInfo(pda)
-    let metadata = new Metadata(ownerKey.toString(), accountInfo.value)
-    const { data } = await axios.get(metadata.data.data.uri)
+    try{
+      const mintKey = new anchor.web3.PublicKey(mint)
+      const ownerKey = new anchor.web3.PublicKey(owner)
+      let [pda] = await anchor.web3.PublicKey.findProgramAddress([
+        Buffer.from('metadata'),
+        TOKEN_METADATA_PROGRAM_ID.toBuffer(),
+        mintKey.toBuffer(),
+      ], TOKEN_METADATA_PROGRAM_ID)
     
-    return data
+      const accountInfo = await connection.getParsedAccountInfo(pda)
+      let metadata = new Metadata(ownerKey.toString(), accountInfo.value)
+      const { data } = await axios.get(metadata.data.data.uri)
+      
+      return data
+    } catch(error) {
+      return error.message
+    }
   }
   
   static getAssociatedTokenAddress = async(
@@ -80,35 +84,39 @@ class NFTService {
     mint,
     to,
   ) => {
-    const mintKey = new anchor.web3.PublicKey(mint)
-    const toKey = new anchor.web3.PublicKey(to)
-    const fromAccount = anchor.web3.Keypair.fromSecretKey(bs58.decode(process.env.CREATOR))
-    const fromNFTAccount = await this.getAssociatedTokenAddress(fromAccount.publicKey, mintKey)
-    const toNFTAccount = await this.getAssociatedTokenAddress(toKey, mintKey)
-  
-    let transaction = new anchor.web3.Transaction()
-    if(await connection.getAccountInfo(toNFTAccount) == null){
+    try{
+      const mintKey = new anchor.web3.PublicKey(mint)
+      const toKey = new anchor.web3.PublicKey(to)
+      const fromAccount = anchor.web3.Keypair.fromSecretKey(bs58.decode(process.env.CREATOR))
+      const fromNFTAccount = await this.getAssociatedTokenAddress(fromAccount.publicKey, mintKey)
+      const toNFTAccount = await this.getAssociatedTokenAddress(toKey, mintKey)
+    
+      let transaction = new anchor.web3.Transaction()
+      if(await connection.getAccountInfo(toNFTAccount) == null){
+        transaction.add(
+          this.createAssociatedTokenAccountInstruction(
+            toNFTAccount,
+            fromAccount.publicKey,
+            toKey,
+            mintKey
+          )
+        )
+     }
       transaction.add(
-        this.createAssociatedTokenAccountInstruction(
+        createTransferInstruction(
+          fromNFTAccount,
           toNFTAccount,
           fromAccount.publicKey,
-          toKey,
-          mintKey
+          1,
+          []
         )
       )
-   }
-    transaction.add(
-      createTransferInstruction(
-        fromNFTAccount,
-        toNFTAccount,
-        fromAccount.publicKey,
-        1,
-        []
-      )
-    )
-    var signature = await anchor.web3.sendAndConfirmTransaction( connection, transaction, [ fromAccount ] )
-    
-    return signature
+      var signature = await anchor.web3.sendAndConfirmTransaction( connection, transaction, [ fromAccount ] )
+      
+      return signature
+    }catch(error) {
+      return error.message
+    }
   }
 }
 

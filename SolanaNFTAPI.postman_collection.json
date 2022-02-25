@@ -1,0 +1,55 @@
+{
+	"info": {
+		"_postman_id": "769f8a2b-f19f-498f-bcac-24f04a35d2f3",
+		"name": "SolanaNFTAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getNFTinfo",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/nft/info/BznTtLgF6rVVDrFjMa9tMjYyDKB9agkYUSysRd9Yr9Le/74vKcpJbLZqJ6ZSXm2ZSCsggR1MWSZFXUTk3NWLdeJvp",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"nft",
+						"info",
+						"BznTtLgF6rVVDrFjMa9tMjYyDKB9agkYUSysRd9Yr9Le",
+						"74vKcpJbLZqJ6ZSXm2ZSCsggR1MWSZFXUTk3NWLdeJvp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "transfer",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/nft/transfer/AFw3WUsbS1HErkdqiy5VvF2yZWxpBtkS4uaTN1BzVmeF/36RYjWfhhuQx3LZ2Te3i6iU2WPzeAkGipcJcEskcpyB4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"nft",
+						"transfer",
+						"AFw3WUsbS1HErkdqiy5VvF2yZWxpBtkS4uaTN1BzVmeF",
+						"36RYjWfhhuQx3LZ2Te3i6iU2WPzeAkGipcJcEskcpyB4"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
